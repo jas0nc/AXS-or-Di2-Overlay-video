@@ -1,6 +1,5 @@
 This a python program for coverting the gear change event recorded by Garmin Edge computer to an transparent overlay video for use in editor software. 
 
-![temp_gear_image](https://github.com/user-attachments/assets/3f72abc1-395c-4b2f-b40f-9019723a2fce)
 ![Screenshot 2025-02-28 at 3 42 11 PM](https://github.com/user-attachments/assets/4d7bddee-8fc3-4fa9-8633-71a4f651aecc)
 
 **Requirements: **
