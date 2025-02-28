@@ -4,3 +4,5 @@ pip3 install packaging
 python3.11 gear_overlay.py 18387303755_ACTIVITY-event.csv
 
 python gear_overlay.py 18387303755_ACTIVITY-event.csv -o my_gear_video.mov
+
+chmod u+x /Users/jachan/Documents/GitHub/AXS-or-Di2-Overlay-video/Event_csv_to_gearbox_overlay.sh
