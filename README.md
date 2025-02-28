@@ -4,7 +4,7 @@ This a python program for coverting the gear change event recorded by Garmin Edg
 
 **Requirements: **
 1) python3
-2) library like pandas, moviepy, PIL.
+2) library like pandas, moviepy, PIL, packaging.
 3) ffmpeg
 
 This program has no ability to read fit file directly, so we still need to use third party app to extract the event file from the garmin fit file. 
