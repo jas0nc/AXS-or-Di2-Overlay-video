@@ -70,7 +70,16 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         x = (width - text_width) / 2
         y = (height - text_height) / 2
 
-        draw.text((x, y), text, font=font, fill=(255, 255, 255, 255))  # White text, fully opaque
+
+        # Draw black outline
+        outline_color = (0, 0, 0, 255)  # Black, fully opaque
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                draw.text((x + i, y + j), text, font=font, fill=outline_color)
+	# Draw white text
+        text_color = (255, 255, 255, 255)  # White, fully opaque
+        draw.text((x, y), text, font=font, fill=text_color)
+
         return image
 
     # Iterate through gear changes to create clips
