@@ -20,18 +20,30 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         print(f"Error: CSV file not found at {csv_filepath}")
         return
 
+    # Extract start time from 'timer' event
+    start_timer_event = df[(df['event'] == 'timer') & (df['event type'] == 'start')]
+    if not start_timer_event.empty:
+        start_timecode = pd.to_datetime(start_timer_event['timestamp'].iloc[0])
+    else:
+        print("Warning: No 'timer start' event found. Using first gear change event as start time.")
+        gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange'])].copy()
+        if gear_changes.empty:
+            print("No gear change events found in the CSV.")
+            return
+        gear_changes['timestamp'] = pd.to_datetime(gear_changes['timestamp'])
+        start_timecode = gear_changes['timestamp'].iloc[0] #use the first gear change event
+
     # Filter relevant events
     gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange'])].copy()
-    gear_changes['timestamp'] = pd.to_datetime(gear_changes['timestamp']) #convert timestamp to datetime
+    gear_changes['timestamp'] = pd.to_datetime(gear_changes['timestamp'])
 
     if gear_changes.empty:
         print("No gear change events found in the CSV.")
         return
 
-    # Determine start and end times
-    start_time = gear_changes['timestamp'].iloc[0]
+    # Determine end time (not strictly needed anymore, but good to have)
     end_time = gear_changes['timestamp'].iloc[-1]
-    total_duration = (end_time - start_time).total_seconds()
+    total_duration = (end_time - start_timecode).total_seconds()
 
     # Prepare video clip list
     clips = []
@@ -48,7 +60,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         except IOError:
             font = ImageFont.load_default()  # Use a default font if Arial is not found
 
-        text = f"{int(front_gear) if pd.notna(front_gear) else '-'}x{int(rear_gear) if pd.notna(rear_gear) else '-'}" #display gear, change gear to int and replace nan with -
+        text = f"{int(front_gear) if pd.notna(front_gear) else '-'}x{int(rear_gear) if pd.notna(rear_gear) else '-'}"  # display gear, change gear to int and replace nan with -
 
         # Use textbbox to get text size
         bbox = draw.textbbox((0, 0), text, font=font)
@@ -67,6 +79,9 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         front_gear = event['front gear']
         rear_gear = event['rear gear']
 
+        # Calculate clip start time relative to start_timecode
+        clip_start_time = (event['timestamp'] - start_timecode).total_seconds()
+
         # Determine duration of the clip
         if i < len(gear_changes) - 1:
             next_time = gear_changes['timestamp'].iloc[i + 1]
@@ -80,14 +95,11 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
 
         # Create the clip from the image
         clip = ImageClip("temp_gear_image.png", duration=duration)
-        clip = clip.with_position(("center", "bottom")).with_opacity(1)  # Adjust position as needed
+        clip = clip.with_position(("center", "bottom")).with_opacity(1).with_start(clip_start_time)  # Adjust position as needed
         clips.append(clip)
 
     # Concatenate clips
     final_clip = concatenate_videoclips(clips, method="compose")
-
-    # Set video start time to match ride start time
-    final_clip = final_clip.with_start(0)
 
     # Set audio to none
     final_clip = final_clip.without_audio()
