@@ -2,6 +2,8 @@ import pandas as pd
 from moviepy.editor import *
 from moviepy.video.tools.drawing import color_gradient
 from PIL import Image, ImageDraw, ImageFont
+import argparse  # Import the argparse module
+import os
 
 def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     """
@@ -91,9 +93,16 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
                                audio=False,
                                fps=24,
                                ffmpeg_params=["-pix_fmt", "yuva420p"]) # Ensure transparency is preserved
+    # Clean up temporary file
+    os.remove("temp_gear_image.png")
 
     print(f"Gear overlay video created: {output_filepath}")
 
-# Example usage:
-csv_file = "18387303755_ACTIVITY-event.csv"  # Replace with your actual CSV file path
-generate_gear_overlay(csv_file)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate a transparent gear overlay video from a cycling CSV.")
+    parser.add_argument("csv_filepath", help="Path to the input CSV file.")
+    parser.add_argument("-o", "--output_filepath", help="Path to the output .mov file (optional, default: gear_overlay.mov)", default="gear_overlay.mov")
+
+    args = parser.parse_args()
+
+    generate_gear_overlay(args.csv_filepath, args.output_filepath)
