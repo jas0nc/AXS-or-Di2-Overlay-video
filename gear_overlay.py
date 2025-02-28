@@ -4,7 +4,6 @@ from moviepy.video.tools.drawing import color_gradient
 from PIL import Image, ImageDraw, ImageFont
 import argparse
 import os
-from packaging import version  # Import packaging.version
 
 def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     """
@@ -56,7 +55,6 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
 
-
         x = (width - text_width) / 2
         y = (height - text_height) / 2
 
@@ -89,7 +87,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     final_clip = concatenate_videoclips(clips, method="compose")
 
     # Set video start time to match ride start time
-    final_clip = final_clip.set_start(0)
+    final_clip = final_clip.with_start(0)
 
     # Set audio to none
     final_clip = final_clip.without_audio()
