@@ -73,7 +73,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
 
         # Draw black outline
         outline_color = (0, 0, 0, 255)  # Black, fully opaque
-        for i in range(-1, 2):
+        for i in range(-2, 3):
             for j in range(-1, 2):
                 draw.text((x + i, y + j), text, font=font, fill=outline_color)
 	# Draw white text
@@ -117,7 +117,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     final_clip.write_videofile(output_filepath,
                                codec="png",  # Use PNG codec for transparency
                                audio=False,
-                               fps=24,
+                               fps=1,
                                ffmpeg_params=["-pix_fmt", "yuva420p"]) # Ensure transparency is preserved
     # Clean up temporary file
     os.remove("temp_gear_image.png")
