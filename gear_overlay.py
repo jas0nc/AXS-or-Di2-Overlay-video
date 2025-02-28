@@ -82,7 +82,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
 
         # Create the clip from the image
         clip = ImageClip("temp_gear_image.png", duration=duration)
-        clip = clip.set_position(("center", "bottom")).set_opacity(1)  # Adjust position as needed
+        clip = clip.with_position(("center", "bottom")).with_opacity(1)  # Adjust position as needed
         clips.append(clip)
 
     # Concatenate clips
