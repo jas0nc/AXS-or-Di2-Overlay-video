@@ -51,7 +51,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     # Function to create a gear frame as a PIL image
     def create_gear_frame(front_gear, rear_gear):
         width, height = 250, 150  # Adjust as needed
-        image = Image.new('RGBA', (width, height), (0, 0, 1, 0))  # Transparent background
+        image = Image.new('RGBA', (width, height), (0, 0, 0, 0))  # Transparent background
         draw = ImageDraw.Draw(image)
 
         # Choose a font and size that works on your system
