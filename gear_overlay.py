@@ -38,17 +38,17 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
 
     # Function to create a gear frame as a PIL image
     def create_gear_frame(front_gear, rear_gear):
-        width, height = 600, 200  # Adjust as needed
-        image = Image.new('RGBA', (width, height), (0, 0, 0, 0))  # Transparent background
+        width, height = 250, 150  # Adjust as needed
+        image = Image.new('RGBA', (width, height), (0, 0, 1, 0))  # Transparent background
         draw = ImageDraw.Draw(image)
 
         # Choose a font and size that works on your system
         try:
-            font = ImageFont.truetype("/Library/Fonts/Arial.ttf", size=60)  # Replace with path to a font on your system
+            font = ImageFont.truetype("/Library/Fonts/NCLMonsterBeast-Demo.ttf", size=50)  # Replace with path to a font on your system
         except IOError:
             font = ImageFont.load_default()  # Use a default font if Arial is not found
 
-        text = f"Front: {int(front_gear) if pd.notna(front_gear) else '-'} | Rear: {int(rear_gear) if pd.notna(rear_gear) else '-'}" #display gear, change gear to int and replace nan with -
+        text = f"{int(front_gear) if pd.notna(front_gear) else '-'}x{int(rear_gear) if pd.notna(rear_gear) else '-'}" #display gear, change gear to int and replace nan with -
 
         # Use textbbox to get text size
         bbox = draw.textbbox((0, 0), text, font=font)

@@ -1,0 +1,6 @@
+pip3 install moviepy pandas
+pip3 install packaging
+
+python3.11 gear_overlay.py 18387303755_ACTIVITY-event.csv
+
+python gear_overlay.py 18387303755_ACTIVITY-event.csv -o my_gear_video.mov
