@@ -1,9 +1,10 @@
 import pandas as pd
-from moviepy.editor import *
+from moviepy import *
 from moviepy.video.tools.drawing import color_gradient
 from PIL import Image, ImageDraw, ImageFont
-import argparse  # Import the argparse module
+import argparse
 import os
+from packaging import version  # Import packaging.version
 
 def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     """
@@ -49,7 +50,13 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
             font = ImageFont.load_default()  # Use a default font if Arial is not found
 
         text = f"Front: {int(front_gear) if pd.notna(front_gear) else '-'} | Rear: {int(rear_gear) if pd.notna(rear_gear) else '-'}" #display gear, change gear to int and replace nan with -
-        text_width, text_height = draw.textsize(text, font=font)
+
+        # Use textbbox to get text size
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+
+
         x = (width - text_width) / 2
         y = (height - text_height) / 2
 
