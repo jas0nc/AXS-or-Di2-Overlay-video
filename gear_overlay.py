@@ -21,24 +21,24 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         return
 
     # Extract start time from 'timer' event
-    start_timer_event = df[(df['event'] == 'timer') & (df['event type'] == 'start')]
+    start_timer_event = df[(df['event'] == 'timer') & (df['event_type'] == 'start')]
     if not start_timer_event.empty:
         start_timecode = pd.to_datetime(start_timer_event['timestamp'].iloc[0])
     else:
         print("Warning: No 'timer start' event found. Using first gear change event as start time.")
-        gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange'])].copy()
+        gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange', 'rear_gear_change'])].copy()
         if gear_changes.empty:
-            print("No gear change events found in the CSV.")
+            print("No gear change events found in the CSV. (Extract start time)")
             return
         gear_changes['timestamp'] = pd.to_datetime(gear_changes['timestamp'])
         start_timecode = gear_changes['timestamp'].iloc[0] #use the first gear change event
 
     # Filter relevant events
-    gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange'])].copy()
+    gear_changes = df[df['event'].isin(['frontGearChange', 'rearGearChange', 'rear_gear_change'])].copy()
     gear_changes['timestamp'] = pd.to_datetime(gear_changes['timestamp'])
 
     if gear_changes.empty:
-        print("No gear change events found in the CSV.")
+        print("No gear change events found in the CSV. (Filter relevant events)")
         return
 
     # Determine end time (not strictly needed anymore, but good to have)
@@ -58,7 +58,7 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
         try:
             font = ImageFont.truetype("/Library/Fonts/NCLMonsterBeast-Demo.ttf", size=50)  # Replace with path to a font on your system
         except IOError:
-            font = ImageFont.load_default()  # Use a default font if Arial is not found
+            font = ImageFont.load_default()  # Use a default font if NCLMonsterBeast-Demo is not found
 
         text = f"{int(front_gear) if pd.notna(front_gear) else '-'}x{int(rear_gear) if pd.notna(rear_gear) else '-'}"  # display gear, change gear to int and replace nan with -
 
@@ -85,8 +85,8 @@ def generate_gear_overlay(csv_filepath, output_filepath="gear_overlay.mov"):
     # Iterate through gear changes to create clips
     for i in range(len(gear_changes)):
         event = gear_changes.iloc[i]
-        front_gear = event['front gear']
-        rear_gear = event['rear gear']
+        front_gear = event['front_gear']
+        rear_gear = event['rear_gear']
 
         # Calculate clip start time relative to start_timecode
         clip_start_time = (event['timestamp'] - start_timecode).total_seconds()
